@@ -1,2 +1,2 @@
 # phpLoginDobleFactor
-Login PHP con Doble Factor de Autenticacion con Google Authenticator
+Login Doble Factor con Google Authenticator
