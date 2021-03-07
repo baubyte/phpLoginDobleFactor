@@ -1,21 +1,21 @@
 <?php
-  include './templates/header.php';  
+include './templates/header.php';
 
-  if ($userController->isUserLoggedIn()) {
+if ($userController->isUserLoggedIn()) {
     header('Location: panel.php');
   }
 
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Usuario</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
+
 <body>
 
     <?php include './templates/nav.php' ?>
@@ -23,20 +23,21 @@
     <div class="container mt-5">
         <div class="row justify-content-md-center">
             <div class="col col-md-6">
-                <h3>Nuevo Usuario</h3><hr />
-                <form id="register-form">
+                <h3>Nuevo Usuario</h3>
+                <hr />
+                <form id="registerForm">
                     <div class="form-group">
                         <label for="name">Nombre</label>
-                        <input type="text" class="form-control" id="name">            
+                        <input type="text" class="form-control" id="name">
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email">            
+                        <input type="email" class="form-control" id="email">
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="password">
-                    </div>      
+                    </div>
                     <button type="submit" class="btn btn-primary">Crear cuenta</button>
                 </form>
                 <div class="alert alert-danger mt-4 d-none" id="errorMessage"></div>
@@ -44,34 +45,42 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script>
-        document.getElementById('register-form').onsubmit = (e) => {
+        document.getElementById('registerForm').onsubmit = (e) => {
+            /**Prevenimos el comportamiento */
             e.preventDefault();
 
+            /**Para Mostrar los Errores */
             const errorMessage = document.getElementById('errorMessage');
             errorMessage.classList.add('d-none');
+            /**Obtenemos los valores */
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
+            /**Si no existen no enviamos el formulario */
             if (!email || !name || !password) {
                 return;
             }
 
-            axios.post('api/register.php', { email: email, name: name, password: password })
+            /**Si existe usamos para enviar los datos por post  */
+            axios.post('api/register.php', {
+                    email: email,
+                    name: name,
+                    password: password
+                })
                 .then(res => {
-                    window.location = 'panel.php';                    
+                    window.location = 'panel.php';
                 })
                 .catch(err => {
                     errorMessage.innerText = err.response.data;
-                    errorMessage.classList.remove('d-none');                    
+                    errorMessage.classList.remove('d-none');
                 });
 
         }
     </script>
-    
+
 </body>
+
 </html>
-
-

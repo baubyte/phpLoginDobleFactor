@@ -15,11 +15,12 @@ $userController = new UserController();
 
 $id = $userController->register($data['name'], $data['email'], $data['password']);
 
+/**Si no se pudo crear el usuario retornamos el error sino nos logueamos */
 if ($id === 0) {
     http_response_code(400);
     echo "Ya existe un usuario registrado con el email que ingresaste";
 } else {
-    //$userController->login($data['email'], $data['password']);
+    $userController->login($data['email'], $data['password']);
     http_response_code(200);
     echo $id;
 }

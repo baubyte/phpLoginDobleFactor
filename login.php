@@ -1,7 +1,7 @@
 <?php
 
   include './templates/header.php';  
-
+  
   if ($userController->isUserLoggedIn()) {
     header('Location: panel.php');
   }
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script>
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
@@ -65,8 +65,7 @@
                         window.location = 'loginSecondFactor.php';
                     } else {
                         window.location = 'panel.php';
-                    }
-                })
+                    }              })
                 .catch(err => {
                     errorMessage.innerText = err.response.data;
                     errorMessage.classList.remove('d-none');                    
