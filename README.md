@@ -3,4 +3,4 @@ Login Doble Factor con Google Authenticator
 ### Pasos
 1. Clonar repo
 2. Ejecutar **composer install** para instalar todas las dependencias
-3. Importar la base de datos <a name=”db″>dB</a> 
+3. Importar la base de datos <a name=”https://github.com/baubyte/phpLoginDobleFactor/tree/main/dB″>dB</a> 
