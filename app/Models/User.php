@@ -4,6 +4,14 @@ namespace App\Models;
 
 class User extends Database {
 
+    /**
+     * Inserta un usuario en la dB
+     *
+     * @param [string] $name
+     * @param [string] $email
+     * @param [string] $password
+     * @return ID del usuario
+     */
     public function createUser($name, $email, $password) {
         $query = $this->db->prepare("INSERT INTO users (name, email, password) VALUES (?,?,?)");
         $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -14,6 +22,12 @@ class User extends Database {
         return $insertedId;
     }
 
+    /**
+     * Obtiene todos los datos del usuario
+     *
+     * @param [string] $email
+     * @return [array] con los datos del usuario
+     */
     public function getUser($email) {
         $query = $this->db->prepare("SELECT * FROM users WHERE email = ?");        
         $query->bind_param('s', $email);
@@ -23,12 +37,25 @@ class User extends Database {
         return $result->fetch_assoc();
     }
 
+    /**
+     * Agrega la clave secreta al usuario
+     *
+     * @param [string] $secret
+     * @param [id] $id
+     * @return void
+     */
     public function createSecret($secret, $id) {
         $query = $this->db->prepare("UPDATE users SET two_factor_key = ? WHERE id = ?");        
         $query->bind_param('si', $secret, $id);
         $query->execute();
     }
 
+    /**
+     * Elimina la calve secreta del usuario
+     *
+     * @param [int] $id
+     * @return void
+     */
     public function deleteSecret($id) {
         $query = $this->db->prepare("UPDATE users SET two_factor_key = null WHERE id = ?");        
         $query->bind_param('i', $id);

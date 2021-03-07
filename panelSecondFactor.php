@@ -6,15 +6,19 @@
     header('Location: login.php');
   }
 
-  //segundo factor
+  //Segundo Factor
   $user = $userController->getUser();
   
+  /**Para poder activar el segundo factor de autenticación */
   $hasTwoFactorActive = true;
 
+  /**Comprobamos si el usuario tiene no tiene activo el segundo factor de autenticación*/
   if ($user['two_factor_key'] === null) {
       $hasTwoFactorActive = false;
-      $g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
-      $secret = $g->generateSecret();
+      $googleAuthenticator = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+      /**Generamos la clave secreta */
+      $secret = $googleAuthenticator->generateSecret();
+      /**Generamos el QR */
       $qrCode = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate($user['name'], $secret, "BAUBYTE");
   } 
 
@@ -61,7 +65,7 @@
     <?php endif; ?>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <?php if (!$hasTwoFactorActive): ?>
         <script>
             document.getElementById('activateSecondFactor').onsubmit = (e) => {
@@ -71,18 +75,16 @@
                 errorMessage.classList.add('d-none');            
                 const code = document.getElementById('code').value;
                 const secret = '<?= $secret ?>';
-
                 if (!code || !secret) {
                     return;
                 }
-
                 axios.post('api/activateSecondFactor.php', { code: code, secret: secret })
                     .then(res => {                        
                         window.location = 'panelSecondFactor.php';
                     })
                     .catch(err => {
                         errorMessage.innerText = err.response.data;
-                        errorMessage.classList.remove('d-none');                    
+                        errorMessage.classList.remove('d-none');
                     });
 
             }

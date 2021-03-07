@@ -25,8 +25,8 @@ class UserController
     /**
      * Método por el cual un Usuario puede Iniciar Sesión
      *
-     * @param [type] $email
-     * @param [type] $password
+     * @param [string] $email
+     * @param [string] $password
      * @return void
      */
     public function login($email, $password)
@@ -43,7 +43,7 @@ class UserController
             return ['result' => false];
         }
 
-        /**Vemos si el usuario tiene activo el segundo factor */
+        /**Vemos si el usuario tiene activo el segundo factor y retornamos true pero no creamos la sesión  */
         if ($user['two_factor_key'] !== null) {
             $this->createSession(null, $user['email'], false);
             return ['result' => true, 'secondfactor' => true];
@@ -56,8 +56,8 @@ class UserController
     /**
      * Crea las Sesiones al Iniciar sesión
      *
-     * @param [type] $id
-     * @param [type] $email
+     * @param [int] $id
+     * @param [string] $email
      * @param boolean $isLoggedIn
      * @return void
      */
@@ -91,4 +91,72 @@ class UserController
 
         }
     }
+    /**
+     * Permite obtener los datos del usuario logueado
+     *
+     * @return [array] Datos del Usuario
+     */
+    public function getUser() {
+        $email = $_SESSION['email'];
+        return (new User())->getUser($email);
+    }   
+    /**
+     * Activa el Segundo Factor de Utenticacion
+     *
+     * @param [string] $secret
+     * @param [int] $code
+     * @return boolean
+     */
+    public function activateSecondFactor($secret, $code) {
+        /**Comprobamos si el código es correcto */
+        if ($this->checkGoogleAuthenticatorCode($secret, $code)) {
+            /**Obtenemos el id y agregamos el código secreto */
+            $id = $_SESSION['userId'];
+            (new User())->createSecret($secret, $id);
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Elimina el doble factor de autenticacion
+     *
+     * @return void
+     */
+    public function deactivateSecondFactor() {
+        $id = $_SESSION['userId'];
+        (new User())->deleteSecret($id);
+    }
+    /**
+     * Comprueba si el código del bole factor es correcto
+     *
+     * @param [string] $secret
+     * @param [int] $code
+     * @return boolean
+     */
+    public function checkGoogleAuthenticatorCode($secret, $code) {
+        $g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+        if ($g->checkCode($secret, $code)) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Valida el código del doble factor de autenticacion
+     *
+     * @param [int] $code
+     * @return boolean
+     */
+    public function validateCode($code) {
+        /**Obtenemos el usuario logueado */
+        $user = $this->getUser();
+        /**Validamos el código */
+        if ($this->checkGoogleAuthenticatorCode($user['two_factor_key'], $code)) {
+            /**Creamos la sesión */
+            $this->createSession($user['id'], $user['email']);
+            return true;
+        }
+
+        return false;
+    }
+    
 }

@@ -29,7 +29,7 @@
         <div class="row justify-content-md-center">
             <div class="col col-md-6">
                 <h3>Segundo Factor de Autenticación</h3><hr />
-                <form id="second-factor-form">                   
+                <form id="secondFactorForm">                   
                     <div class="form-group">
                         <label for="code">Código</label>
                         <input type="text" class="form-control" id="code">            
@@ -43,7 +43,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script>
-        document.getElementById('second-factor-form').onsubmit = (e) => {
+        document.getElementById('secondFactorForm').onsubmit = (e) => {
             e.preventDefault();
 
             const errorMessage = document.getElementById('errorMessage');
